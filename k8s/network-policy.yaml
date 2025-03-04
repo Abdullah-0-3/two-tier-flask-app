@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flask-network-policy
+  namespace: app
+spec:
+  podSelector:
+    matchLabels:
+      app: mysql
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: flask
+        - namespaceSelector:
+            matchLabels:
+              name: app
+    - ports:
+        - protocol: TCP
+          port: 3306
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: mysql
+        - namespaceSelector:
+            matchLabels:
+              name: app
+    - ports:
+        - protocol: TCP
+          port: 3306 
